@@ -25,12 +25,12 @@ hf-login:
 	pip install -U "huggingface_hub[cli]"
 	git pull origin update
 	git switch update
-	huggingface-cli login --token $(HF) --add-to-git-credential
+	hf auth login --token $(HF)
 
 push-hub:
-	huggingface-cli upload codemaker2015/Drug-Classification ./app --repo-type=space --commit-message="Sync App files"
-	huggingface-cli upload codemaker2015/Drug-Classification ./model model --repo-type=space --commit-message="Sync Model"
-	huggingface-cli upload codemaker2015/Drug-Classification ./results metrics --repo-type=space --commit-message="Sync Model"
+	hf upload MNCEDISIM/Drug-Classification ./app --repo-type=space --commit-message "Sync App files"
+	hf upload MNCEDISIM/Drug-Classification ./model model --repo-type=space --commit-message "Sync Model"
+	hf upload MNCEDISIM/Drug-Classification ./results metrics --repo-type=space --commit-message "Sync Metrics"
 
 deploy: hf-login push-hub
 

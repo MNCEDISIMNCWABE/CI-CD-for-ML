@@ -10,7 +10,7 @@ train:
 
 LATEST_METRIC := $(shell ls -t results/metrics_*.txt | head -1)
 LATEST_CM := $(shell ls -t results/confusion_matrix_*.png | head -1)
-LATEST_TREND := $(shell ls -t results/performance_trend_*.html | head -1)
+LATEST_TREND := $(shell ls -t results/performance_trend_*.png | head -1)
 
 eval:
 	echo "## Model Metrics" > report.md
@@ -18,13 +18,13 @@ eval:
 	echo '\n## Confusion Matrix Plot' >> report.md
 	echo "![Confusion Matrix]($(LATEST_CM))" >> report.md
 	echo '\n## Performance Trend Plot' >> report.md
-	echo "[View Interactive Performance Trend (open in browser)]($(LATEST_TREND))" >> report.md
+	echo "![Performance Trend]($(LATEST_TREND))" >> report.md
 	cml comment create report.md
 
 update-branch:
 	git config --global user.name $(USER_NAME)
 	git config --global user.email $(USER_EMAIL)
-	git add results/*.txt results/*.png results/*.json results/*.html model/*.skops app/*
+	git add results/*.txt results/*.png results/*.json model/*.skops app/*
 	git commit -m "Update with new results"
 	git push --force origin HEAD:update
 

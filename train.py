@@ -50,7 +50,6 @@ def train_and_evaluate(pipe, X_train, y_train, X_test, y_test):
     f1 = f1_score(y_test, predictions, average="macro")
     return accuracy, f1, predictions
 
-
 def get_timestamp():
     """Get current timestamp"""
     return datetime.now().strftime("%Y%m%d_%H%M%S")

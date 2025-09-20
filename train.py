@@ -8,6 +8,8 @@ from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OrdinalEncoder, StandardScaler
 from sklearn.metrics import accuracy_score, f1_score, confusion_matrix, ConfusionMatrixDisplay
+import os
+from datetime import datetime
 
 def read_data(file_path):
     """Read CSV data from the given file path."""
@@ -48,21 +50,38 @@ def train_and_evaluate(pipe, X_train, y_train, X_test, y_test):
     f1 = f1_score(y_test, predictions, average="macro")
     return accuracy, f1, predictions
 
-def plot_confusion_matrix(y_test, predictions, pipe, filepath="results/model_results.png"):
-    """Plot and save the confusion matrix."""
+
+def get_timestamp():
+    """Get current timestamp"""
+    return datetime.now().strftime("%Y%m%d_%H%M%S")
+
+def plot_confusion_matrix(y_test, predictions, pipe, filepath="results"):
+    """Plot and save confusion matrix with timestamp."""
+    os.makedirs(filepath, exist_ok=True)
+    ts = get_timestamp()
+    full_path = os.path.join(filepath, f"confusion_matrix_{ts}.png")
     cm = confusion_matrix(y_test, predictions, labels=pipe.classes_)
     disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=pipe.classes_)
     disp.plot()
-    plt.savefig(filepath, dpi=120)
+    plt.savefig(full_path, dpi=120)
+    return full_path
 
-def save_metrics(accuracy, f1, filepath="results/metrics.txt"):
-    """Save accuracy and F1 score to a file."""
-    with open(filepath, "w") as outfile:
+def save_metrics(accuracy, f1, filepath="results"):
+    """Save accuracy and F1 score with timestamp."""
+    os.makedirs(filepath, exist_ok=True)
+    ts = get_timestamp()
+    full_path = os.path.join(filepath, f"metrics_{ts}.txt")
+    with open(full_path, "w") as outfile:
         outfile.write(f"Accuracy = {round(accuracy, 2)}, F1 Score = {round(f1, 2)}")
+    return full_path
 
-def save_model(pipe, filepath="model/drug_pipeline.skops"):
-    """Save the trained model pipeline."""
-    sio.dump(pipe, filepath)
+def save_model(pipe, filepath="model"):
+    """Save the trained model pipeline with timestamp."""
+    os.makedirs(filepath, exist_ok=True)
+    ts = get_timestamp()
+    full_path = os.path.join(filepath, f"drug_pipeline_{ts}.skops")
+    sio.dump(pipe, full_path)
+    return full_path
 
 if __name__ == "__main__":
     # Load, transform and split data

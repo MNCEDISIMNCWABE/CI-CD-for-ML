@@ -8,11 +8,14 @@ format:
 train:
 	python train.py
 
+LATEST_METRIC := $(shell ls -t results/metrics_*.txt | head -1)
+LATEST_CM := $(shell ls -t results/confusion_matrix_*.png | head -1)
+
 eval:
 	echo "## Model Metrics" > report.md
-	cat ./results/metrics.txt >> report.md
+	cat $(LATEST_METRIC) >> report.md
 	echo '\n## Confusion Matrix Plot' >> report.md
-	echo '![Confusion Matrix](./results/model_results.png)' >> report.md
+	echo "![Confusion Matrix]($(LATEST_CM))" >> report.md
 	cml comment create report.md
 
 update-branch:
@@ -29,8 +32,8 @@ hf-login:
 
 push-hub:
 	hf upload MNCEDISIM/Drug-Classification ./app --repo-type=space --commit-message "Sync App files"
-	hf upload MNCEDISIM/Drug-Classification ./model model --repo-type=space --commit-message "Sync Model"
-	hf upload MNCEDISIM/Drug-Classification ./results metrics --repo-type=space --commit-message "Sync Metrics"
+	hf upload MNCEDISIM/Drug-Classification ./model --repo-type=space --commit-message "Sync Model Versions"
+	hf upload MNCEDISIM/Drug-Classification ./results --repo-type=space --commit-message "Sync Metrics Versions"
 
 deploy: hf-login push-hub
 
